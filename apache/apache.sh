@@ -15,6 +15,10 @@ firewall-cmd --reload
     /etc/httpd/conf.d/          >>          # Additional configs (virtual hosts, modules)
     /var/www/html/              >>          # Default website root
 
+
+#-----------------------------------
+
+
 ## Change default document root from /var/www/html >> /mnt/websites (It isn't important to change ^_^)
 
 vim /etc/httpd/conf/httpd.conf
@@ -39,6 +43,9 @@ systemctl restart httpd
 
 setfacl -R -m g:developers:rwX /var/www/html    >>    # X mean set execute permission for directories only
 setfacl -d -m g:developers:rwx /var/www/html
+
+
+#-----------------------------------
 
 
 ## Virtual Hosts (host more than one website with same ip - name-based hostname) 
@@ -93,5 +100,36 @@ vim /etc/hosts
     $IP     www.sales.com
 
 
+#-----------------------------------
+
+
+## Configure TLS certificate (Just for Lab!)
+
+yum install openssl mod_ssl -y
+
+mkdir -p /etc/ssl/private
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+
+vim /etc/httpd/conf.d/media.conf
+    <Directory "/var/www/media.com">
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    <VirtualHost *:443>
+        SSLEngine on
+        SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+        SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+        ServerName media.com
+        ServerAlias www.media.com
+        ServerAdmin webmaster@media.com
+        DocumentRoot /var/www/media.com
+        ErrorLog /var/log/httpd/media.com-error.log
+        CustomLog /var/log/httpd/media.com-access.log combined
+    </VirtualHost>
+
+firewall-cmd --add-service=https --permanent
+firewall-cmd --reload
 
 
