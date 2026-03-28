@@ -32,6 +32,7 @@ vim /etc/nginx/conf.d/lb.conf
     upstream backend_pool {
         server 192.168.1.5; 
         server 192.168.1.9;
+      # server 192.168.1.9 weight=3;    # if we use this instead above >> this server will handle 3 req. than other backend server (it called weighted load balancing)
     }
 
     # allow https redirection
@@ -57,12 +58,10 @@ vim /etc/nginx/conf.d/lb.conf
 
         # configure strong cipher suites >> encryption algorithms
         ssl_prefer_server_ciphers on;
-        ssl_ciphers HIGH:!aNULL:!MD5:!3DES;         # HIGH > strong encryption, !aNULL > disable anonymous auth, !MD5 > remove weak hash, !3DES > remove weak cipher
-
+        ssl_ciphers HIGH:!aNULL:!MD5:!3DES;       
 
         location / {
             proxy_pass http://backend_pool;
-
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
