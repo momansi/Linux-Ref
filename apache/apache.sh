@@ -129,7 +129,4 @@ vim /etc/httpd/conf.d/media.conf
         CustomLog /var/log/httpd/media.com-access.log combined
     </VirtualHost>
 
-firewall-cmd --add-service=https --permanent
-firewall-cmd --reload
-
 

@@ -84,5 +84,65 @@ vim /etc/hosts
     $IP     media.com old.com
 
 
+#-----------------------------------
 
+
+## Configure TLS certificate for Last Website and enforce https redirect
+
+yum install openssl mod_ssl -y
+
+mkdir /etc/nginx/ssl
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/media.com.key -out /etc/nginx/ssl/media.com.cert
+
+vim /etc/nginx/conf.d/media.com.conf
+
+    # redirect from http url to https url
+    server {
+        listen 80;
+        server_name media.com www.media.com;
+        return 301 https://$host$request_uri;
+    }
+
+    # https config.
+    server {
+        listen 443 ssl;
+        server_name media.com www.media.com;
+
+        ssl_certificate /etc/nginx/ssl/media.com.cert;
+        ssl_certificate_key /etc/nginx/ssl/media.com.key;
+
+        # enforce browsers to always use HTTPS for 1 year
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # allow only secure TLS versions
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        # configure strong cipher suites >> encryption algorithms
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers HIGH:!aNULL:!MD5:!3DES;         # HIGH > strong encryption, !aNULL > disable anonymous auth, !MD5 > remove weak hash, !3DES > remove weak cipher
+
+        # stronger Diffie-Hellman parameters (secure againest modern attcks)
+        # 2048 b or 4096 b !! note: nginx use default DH 1024b 
+        # you should generate it first by: openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+        # ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+
+        root /var/www/media.com;
+        index index.html;
+
+        # custom error page
+
+        error_page 404 /404.html;
+        location = /404.html {
+                root /var/www/media.com;
+        }
+
+        # redirect /old to /new
+        location /oldpage {
+                rewrite ^/oldpage$ /newpage permanent;
+        }
+    }
+
+
+#-----------------------------------
 
