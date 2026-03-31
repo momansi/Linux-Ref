@@ -120,12 +120,12 @@ vim /etc/nginx/conf.d/media.com.conf
 
         # configure strong cipher suites >> encryption algorithms
         ssl_prefer_server_ciphers on;
-        ssl_ciphers HIGH:!aNULL:!MD5:!3DES;         # HIGH > strong encryption, !aNULL > disable anonymous auth, !MD5 > remove weak hash, !3DES > remove weak cipher
+        ssl_ciphers HIGH:!aNULL:!MD5:!3DES;          # HIGH > strong encryption, !aNULL > disable anonymous auth, !MD5 > remove weak hash, !3DES > remove weak cipher
 
         # stronger Diffie-Hellman parameters (secure againest modern attcks)
         # 2048 b or 4096 b !! note: nginx use default DH 1024b 
         # you should generate it first by: openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
-        # ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+        # ssl_dhparam /etc/nginx/ssl/dhparam.pem;    # uncomment for using it!
 
         root /var/www/media.com;
         index index.html;
