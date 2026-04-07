@@ -555,7 +555,9 @@
 **************************************
 
 ## SELinux
-    {
+    {   
+        yum install selinux-policy
+        
         sestatus    #ESLinux status have 3 modes (enforcing, permissive, disabled)
         setenforce 1    #enforcing  @ runtime
         setenforce 0    #permissive @ runtime
