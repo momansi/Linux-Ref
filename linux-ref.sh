@@ -557,7 +557,7 @@
 ## SELinux
     {   
         yum install selinux-policy
-        
+
         sestatus    #ESLinux status have 3 modes (enforcing, permissive, disabled)
         setenforce 1    #enforcing  @ runtime
         setenforce 0    #permissive @ runtime
@@ -1030,3 +1030,16 @@
     }
 
 **************************************
+
+## Advanced Topics
+
+    {
+        # Resource Limits
+        # ---------------- 
+        # changes in limits.conf take effect after user logs out and logs back in
+        
+        vim /etc/security/limits.conf           # assign min and max limit for user, group, ... etc 
+
+        ulimit -Su      # Check soft process limit
+        ulimit -Hu      # Check hard process limit
+    }
