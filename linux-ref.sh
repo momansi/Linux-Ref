@@ -1042,4 +1042,9 @@
 
         ulimit -Su      # Check soft process limit
         ulimit -Hu      # Check hard process limit
+
+        # Set A Custom Message of The Day on Linux
+        # ----------------------------------------
+
+        vim /etc/motd           # add it here ^_^
     }
