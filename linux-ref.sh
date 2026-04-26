@@ -1048,3 +1048,17 @@
 
         vim /etc/motd           # add it here ^_^
     }
+
+    {
+        # Lynis 
+        # -----
+        # checking server tool for hardning system
+
+        apt install lynis 
+        lynis audit system          # check the server 
+                                    # report save under /var/log/lynis.log
+        
+        sudo grep "hardening_index" /var/log/lynis-report.dat   # view system score
+
+        sudo grep "^warning" /var/log/lynis-report.dat
+    }
